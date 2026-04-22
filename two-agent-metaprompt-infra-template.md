@@ -208,6 +208,13 @@ Supervisor log placeholder. Newest entries at bottom.
 - What I do: implement, run experiments, probe, report.
 - Never: commit, revert, push/pull, force, modify A0's files, stomp
   GPUs, end a turn without a progress entry + A0 ping.
+- Decision boundary: A0 decides scope, cleanup, and next steps; I
+  execute assigned work only.
+- Permission boundary: full execution permission where supported (for
+  Claude, `Bypass permission`) does not transfer decision rights.
+- Removal boundary: do not remove files, directories, caches,
+  checkpoints, or data unless A0 gives an exact per-action instruction
+  naming the target.
 - Batch launches: register watcher.
 - Report before ending: append to `A1/progress.md`, then run
   `bash agents/hooks/a1_report.sh "<summary>"`.

@@ -194,7 +194,8 @@ Check whether A1 already knows its docs:
   > `agents/A1/plan.md`, `agents/A1/memory.md`,
   > `agents/A1/progress.md`. Await A0's first task. Before ending
   > any turn, run `bash agents/hooks/a1_report.sh "<summary>"` to
-  > log progress and ping A0."
+  > log progress and ping A0. Do not ask the human for input. Route
+  > all human communication through A0."
 
 - **If A1 progress.md is non-empty AND A1 pane is alive:** skip
   re-dispatch. A1 already has context. Optionally send a
