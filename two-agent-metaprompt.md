@@ -1,6 +1,18 @@
 # Two-Agent Supervisor Bootstrap — Metaprompt
 
-## 0. Runtime config and operator note (edit before use)
+Operator note for the human:
+
+- Edit `A0_AGENT` and `A1_AGENT` in `## 0. Runtime config` below.
+- Open the runtime selected by `A0_AGENT` in the project root and call
+  that session **A0**.
+- Copy and send the full prompt below the separator.
+- `## 0` is part of the copied prompt because A0 needs the runtime
+  mapping rules.
+- `## 1. Identity and mission` is where A0's task instructions begin.
+
+---
+
+## 0. Runtime config (edit before use)
 
 Set these two values before use:
 
@@ -40,16 +52,6 @@ Interpret them this way throughout the rest of the prompt:
 Throughout the rest of this prompt, replace those internal placeholders
 with their literal values before running commands or sending messages.
 Do not reinterpret which side is A0 or A1 later in the prompt.
-
-Operator note for the human (usage text, not part of A0's tasking):
-
-- After editing `A0_AGENT` and `A1_AGENT`, paste this full prompt into
-  a fresh `<A0_RUNTIME_LABEL>` session and call that session **A0**.
-- The actual A0 task instructions start at `## 1. Identity and mission`
-  below; this note is only for setup.
-- A0 will then split the pane, spawn an `<A1_RUNTIME_LABEL>` worker
-  (**A1**) on the right, scaffold the file structure, initialize A1,
-  and pend for the user's objective.
 
 ---
 
