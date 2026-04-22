@@ -2,21 +2,31 @@
 
 ## 0. Runtime config (edit before use)
 
-Set these four values before use:
+Set these two values before use:
 
-- `A0_RUNTIME_LABEL = Claude Code`
-- `A1_RUNTIME_LABEL = Claude Code`
-- `A1_LAUNCH_CMD = claude`
-- `A1_PROCESS_MATCH = claude`
+- `A0_AGENT = Claude`
+- `A1_AGENT = Claude`
 
-`A0` and `A1` are role names. The config block above defines which
+Allowed values are `Claude` and `Codex`.
+
+`A0` and `A1` are role names. The two values above define which
 underlying runtimes those roles use. If you want another pairing, edit
-only this block before pasting the prompt.
+only these two values before pasting the prompt.
 
-Replacement rule: throughout the rest of this prompt, replace
-`<A0_RUNTIME_LABEL>`, `<A1_RUNTIME_LABEL>`, `<A1_LAUNCH_CMD>`, and
-`<A1_PROCESS_MATCH>` with the configured literal values before running
-commands or sending messages.
+Derived replacement rule:
+
+- `<A0_RUNTIME_LABEL>` = `Claude Code` if `A0_AGENT = Claude`,
+  otherwise `Codex`
+- `<A1_RUNTIME_LABEL>` = `Claude Code` if `A1_AGENT = Claude`,
+  otherwise `Codex`
+- `<A1_LAUNCH_CMD>` = `claude` if `A1_AGENT = Claude`, otherwise
+  `codex`
+- `<A1_PROCESS_MATCH>` = `claude` if `A1_AGENT = Claude`, otherwise
+  `codex`
+
+Throughout the rest of this prompt, replace those derived placeholders
+with their literal values before running commands or sending
+messages.
 
 > Paste this into a fresh `<A0_RUNTIME_LABEL>` session (call it **A0**,
 > the supervisor) running in a single tmux pane. A0 will split the
