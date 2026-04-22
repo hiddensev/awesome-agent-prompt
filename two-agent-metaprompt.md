@@ -2,13 +2,10 @@
 
 Operator note for the human:
 
-- Edit `A0_AGENT` and `A1_AGENT` in `## 0. Runtime config` below.
+- Edit `A0_AGENT` and `A1_AGENT` below.
 - Open the runtime selected by `A0_AGENT` in the project root and call
   that session **A0**.
-- Copy and send the full prompt below the separator.
-- `## 0` is part of the copied prompt because A0 needs the runtime
-  mapping rules.
-- `## 1. Identity and mission` is where A0's task instructions begin.
+- Modify and copy the full prompt below the separator.
 
 ---
 
