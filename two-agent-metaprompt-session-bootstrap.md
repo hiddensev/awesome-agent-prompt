@@ -20,6 +20,8 @@ a second Claude Code instance in the adjacent tmux pane.
   start A1 in the **right** pane (to be created).
 - Reusable scaffold already exists at exact-path `agents_template/`.
 - exact-path `agents/` is the live runtime directory for this run.
+- Determine current run state from exact-path `agents/` only. Do not
+  infer active state from sibling directories or prior git history.
 
 ## 2. Bootstrap sequence (IDEMPOTENT — safe to re-run)
 
@@ -48,18 +50,27 @@ ps -p "$(cat agents/monitor.pid 2>/dev/null)" -o pid,cmd 2>&1 | tail -1
 If `agents_template/` is missing, stop and tell the user to run
 `two-agent-metaprompt-infra-template.md` first.
 
+Interpretation boundary:
+
+- `git status` / `git log` are for repo sanity and author identity
+  only.
+- Current run state comes from exact-path `agents/` only.
+- Do not inspect sibling directories or git history to recover prior
+  agent runtime state.
+
 Based on what you see, classify:
 
-- **fresh**: `agents/` is missing or empty. Ignore sibling archive
-  directories such as `agents_v0/`. → Create `agents/` from
-  `agents_template/`, then full bootstrap.
+- **fresh**: `agents/` is missing, empty, or still contains only
+  template placeholders with no live run state. → Treat this as a new
+  run, create/fill `agents/` from `agents_template/`, then full
+  bootstrap.
 - **partial**: `agents/` exists with some files but missing parts
-  (e.g., no monitor PID, or scaffold only, no A1 pane). → Fill the
-  gaps from `agents_template/`; don't rewrite what's there.
+  for the current run (e.g., no monitor PID, or no A1 pane). → Fill
+  the gaps from `agents_template/`; don't rewrite what's there.
 - **resumed**: `agents/` fully populated, monitor PID refers to a
-  live process, A1 pane alive with claude running, objectives.md
-  has non-template content. → Verify and report; do NOT re-dispatch
-  A1 or restart the monitor.
+  live process, A1 pane in this tmux window is alive with claude
+  running, and `agents/objectives.md` has non-template content. →
+  Verify and report; do NOT re-dispatch A1 or restart the monitor.
 
 Report the classification explicitly to the user in your first
 reply.
@@ -117,25 +128,31 @@ If `git status` is clean → skip; nothing to commit.
 
 Check:
 ```bash
-# Does an adjacent pane exist running claude?
-tmux list-panes -a | grep -i claude
+# Does A0's current tmux window already have another pane running claude?
+tmux list-panes -t "$A0_PANE" -F \
+    '#{session_name}:#{window_index}.#{pane_index} active=#{pane_active} cmd=#{pane_current_command}'
 ```
 
-- If a claude is already running in another pane → adopt that pane
-  as `A1_PANE`. Verify by capturing it:
+- If another pane in A0's current tmux window is already running
+  `claude` → adopt that pane as `A1_PANE`. Verify by capturing it:
   `tmux capture-pane -p -t <candidate> -S -10 | tail`.
 - If no adjacent claude → split + start:
   ```bash
-  tmux split-window -h -t "$A0_PANE"
-  A1_PANE=$(tmux list-panes -a -F \
-      '#{session_name}:#{window_index}.#{pane_index} active=#{pane_active}' \
-      | grep 'active=0' | tail -1 | awk '{print $1}')
+  A1_PANE=$(tmux split-window -d -h -P \
+      -F '#{session_name}:#{window_index}.#{pane_index}' \
+      -t "$A0_PANE")
   tmux send-keys -t "$A1_PANE" "claude" Enter
   sleep 3
   tmux capture-pane -p -t "$A1_PANE" -S -10 | tail
+  tmux select-pane -t "$A0_PANE"
   ```
 
 Note `A1_PANE` in `agents/memory.md` once the scaffold exists.
+
+Human-interface rule:
+
+- Keep active focus on A0 after any split.
+- The human talks only to A0.
 
 ### 2.7 Monitor daemon
 
@@ -280,6 +297,7 @@ When silent on a scope question, A0 may default to a stated
 Before pending for the objective, verify:
 
 - [ ] A1 pane alive; `claude` prompt ready.
+- [ ] Active input focus is back on A0 after bootstrap.
 - [ ] All scaffold files copied or filled and committed.
 - [ ] Monitor running; PID in `agents/monitor.pid`; first tick due
       in 1 hour.

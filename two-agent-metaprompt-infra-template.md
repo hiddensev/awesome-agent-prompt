@@ -147,7 +147,7 @@ When done, report:
 
 - `agents_template/` is reusable infrastructure, not an active run.
 - New runs are created by copying this tree into exact-path `agents/`.
-- Old runs can be archived elsewhere, such as `agents_v0/`.
+- Previous runs can be kept outside the live `agents/` directory.
 - Only exact-path `agents/` is the live runtime directory.
 
 ### agents_template/metaprompt.md
