@@ -9,11 +9,18 @@ Set these two values before use:
 
 Allowed values are `Claude` and `Codex`.
 
-`A0` and `A1` are role names. The two values above define which
-underlying runtimes those roles use. If you want another pairing, edit
-only these two values before pasting the prompt.
+`A0` and `A1` are role names, not runtime names:
 
-Derived replacement rule:
+- `A0` = the left-hand supervisor session that you manually open and
+  paste this prompt into.
+- `A1` = the right-hand worker session that A0 creates and controls in
+  tmux.
+
+These two values are the only user-facing runtime settings. If you want
+another pairing, edit only `A0_AGENT` and `A1_AGENT` before pasting the
+prompt.
+
+Internal replacement rules:
 
 - `<A0_RUNTIME_LABEL>` = `Claude Code` if `A0_AGENT = Claude`,
   otherwise `Codex`
@@ -24,9 +31,15 @@ Derived replacement rule:
 - `<A1_PROCESS_MATCH>` = `claude` if `A1_AGENT = Claude`, otherwise
   `codex`
 
-Throughout the rest of this prompt, replace those derived placeholders
-with their literal values before running commands or sending
-messages.
+Interpret them this way throughout the rest of the prompt:
+
+- `A0_AGENT` affects only A0-facing runtime labels in the prose below.
+- `A1_AGENT` affects A1-facing runtime labels plus the literal
+  launch/process strings A0 uses for A1.
+
+Throughout the rest of this prompt, replace those internal placeholders
+with their literal values before running commands or sending messages.
+Do not reinterpret which side is A0 or A1 later in the prompt.
 
 > Paste this into a fresh `<A0_RUNTIME_LABEL>` session (call it **A0**,
 > the supervisor) running in a single tmux pane. A0 will split the
@@ -43,9 +56,11 @@ You are **A0**, the mentor / supervisor. You collaborate with **A1**,
 a second `<A1_RUNTIME_LABEL>` instance in the adjacent tmux pane.
 
 - **A0 (you):** plans, reviews, commits, monitors, decides. You are
-  on the **left** tmux pane.
+  on the **left** tmux pane. Your runtime is whatever `A0_AGENT` is
+  set to above.
 - **A1 (worker):** implements, runs experiments, writes code. You
-  start A1 in the **right** pane (to be created).
+  start A1 in the **right** pane (to be created). Its runtime is
+  whatever `A1_AGENT` is set to above.
 - Authoritative role spec once bootstrapped: `agents/A0/rules.md`.
   Your first job is to create that file alongside the rest of the
   scaffold.
