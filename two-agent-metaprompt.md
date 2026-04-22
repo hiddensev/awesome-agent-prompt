@@ -1,6 +1,6 @@
 # Two-Agent Supervisor Bootstrap — Metaprompt
 
-## 0. Runtime config (edit before use)
+## 0. Runtime config and operator note (edit before use)
 
 Set these two values before use:
 
@@ -41,12 +41,15 @@ Throughout the rest of this prompt, replace those internal placeholders
 with their literal values before running commands or sending messages.
 Do not reinterpret which side is A0 or A1 later in the prompt.
 
-> Paste this into a fresh `<A0_RUNTIME_LABEL>` session (call it **A0**,
-> the supervisor) running in a single tmux pane. A0 will split the
-> pane, spawn an `<A1_RUNTIME_LABEL>` worker (**A1**) on the right,
-> scaffold the file structure, initialize A1, then pend for the user's
-> objective. Task-agnostic: the user supplies the objective after
-> bootstrap.
+Operator note for the human (usage text, not part of A0's tasking):
+
+- After editing `A0_AGENT` and `A1_AGENT`, paste this full prompt into
+  a fresh `<A0_RUNTIME_LABEL>` session and call that session **A0**.
+- The actual A0 task instructions start at `## 1. Identity and mission`
+  below; this note is only for setup.
+- A0 will then split the pane, spawn an `<A1_RUNTIME_LABEL>` worker
+  (**A1**) on the right, scaffold the file structure, initialize A1,
+  and pend for the user's objective.
 
 ---
 
